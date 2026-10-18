@@ -1,0 +1,16 @@
+{
+  "users": [
+    { "id": 1, "name": "Alice Johnson", "email": "alice@example.com", "age": 28, "city": "New York" },
+    { "id": 2, "name": "Bob Smith", "email": "bob@example.com", "age": 34, "city": "San Francisco" },
+    { "id": 3, "name": "Charlie Brown", "email": "charlie@example.com", "age": 22, "city": "Chicago" },
+    { "id": 4, "name": "Diana Ross", "email": "diana@example.com", "age": 31, "city": "Los Angeles" },
+    { "id": 5, "name": "Eve Davis", "email": "eve@example.com", "age": 27, "city": "Seattle" }
+  ],
+  "products": [
+    { "id": 1, "name": "Wireless Mouse", "price": 29.99, "category": "Electronics", "inStock": true },
+    { "id": 2, "name": "Mechanical Keyboard", "price": 79.99, "category": "Electronics", "inStock": true },
+    { "id": 3, "name": "Desk Lamp", "price": 45.00, "category": "Home", "inStock": false },
+    { "id": 4, "name": "Notebook Pack", "price": 12.50, "category": "Stationery", "inStock": true },
+    { "id": 5, "name": "USB-C Hub", "price": 54.99, "category": "Electronics", "inStock": true }
+  ]
+}
