@@ -8,7 +8,7 @@ app.use(express.json());
 
 // ──────────────── Root ────────────────
 app.get("/", (req, res) => {
-  res.json({ message: "API is running", endpoints: ["/users", "/products"] });
+  res.json({ message: "API is runninggggg", endpoints: ["/users", "/products"] });
 });
 
 // ══════════════ USERS ══════════════
