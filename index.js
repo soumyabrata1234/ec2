@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
 });
 
 app.get('/t', (req, res)=>{
-   res.send("working");
+   res.send("billo bage baggea daki karegi");
 })
 
 // ──────────────── Health ────────────────
