@@ -1,4 +1,5 @@
-name: CI
+
+name: CI and CD
 
 on:
   push:
@@ -6,13 +7,12 @@ on:
   pull_request:
     branches: [main]
 
-# Least-privilege: only read repo contents, no write access
 permissions:
   contents: read
 
 jobs:
   test:
-    name: Lint & Test
+    name: Test
     runs-on: ubuntu-latest
 
     steps:
@@ -30,3 +30,54 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+
+    steps:
+      - name: Configure SSH
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_KNOWN_HOSTS: ${{ secrets.EC2_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$EC2_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$EC2_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 \
+            -o StrictHostKeyChecking=yes \
+            "$EC2_USER@$EC2_HOST" 'bash -se' <<'REMOTE'
+          set -e
+          cd /home/ec2-user/ec2
+
+          git fetch origin main
+          git reset --hard origin/main
+          npm ci --omit=dev
+
+          sudo -n /usr/bin/systemctl restart hookflow-api
+
+          for i in $(seq 1 10); do
+            if curl --fail --silent http://localhost:3000/health; then
+              echo
+              echo "Deployment successful"
+              exit 0
+            fi
+            sleep 3
+          done
+
+          echo "Health check failed"
+          sudo -n /usr/bin/systemctl status hookflow-api --no-pager || true
+          sudo -n /usr/bin/journalctl -u hookflow-api -n 50 --no-pager || true
+          exit 1
+          REMOTE
