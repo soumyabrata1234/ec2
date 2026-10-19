@@ -11,6 +11,10 @@ app.get("/", (req, res) => {
   res.json({ message: "API is runninggggg", endpoints: ["/users", "/products"] });
 });
 
+app.get('/t', (req, res)=>{
+   res.send("working");
+})
+
 // ──────────────── Health ────────────────
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
