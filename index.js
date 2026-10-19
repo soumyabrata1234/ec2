@@ -11,6 +11,11 @@ app.get("/", (req, res) => {
   res.json({ message: "API is runninggggg", endpoints: ["/users", "/products"] });
 });
 
+// ──────────────── Health ────────────────
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // ══════════════ USERS ══════════════
 
 // GET all users
@@ -125,6 +130,10 @@ app.delete("/products/:id", (req, res) => {
 });
 
 // ──────────────── Start ────────────────
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
